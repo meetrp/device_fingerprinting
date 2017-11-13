@@ -5,12 +5,17 @@
 #include <unistd.h> /* close */
 #include <netinet/ether.h> /* ETH_P_ALL */
 
+#include "packet.h"
+
+#if 0
+#include <netinet/ip.h> /* ip header */
+#include <netinet/ip_icmp.h> /* icmp header */
+#include <netinet/tcp.h> /* tcp header */
+#include <netinet/udp.h> /* udp header */
+#endif
+
 #define BUF_SIZE 65536
 
-void parse_pkt(unsigned char *buf, int size)
-{
-    printf("size: %d\n", size);
-}
 
 int main(int argc, char* argv[])
 {
@@ -50,7 +55,6 @@ int main(int argc, char* argv[])
     close(sock);
 
  sock_failure:
- out:
     return retval;
 }
 
