@@ -10,10 +10,15 @@ CXX			:= g++
 
 SRCDIR		:=	src
 BUILDDIR	:=	build
-DOCDIR		:=	doc
 TESTDIR		:=	test
 TARGET		:=	bin/dfing
-DOC_TARGET	:=	dfing.doxy
+
+#
+# Documentation related
+DOXYGEN		:= 	$(shell command -v doxygen 2> /dev/null)
+DOCHTML		:=	doc/html
+DOCMAN		:=	doc/man
+DOC_TARGET	:=	doc/dfing.doxyfile
 
 SRCEXT		:=	cpp
 SOURCES		:=	$(shell find $(SRCDIR) -type f -name *.$(SRCEXT))
@@ -36,19 +41,18 @@ $(BUILDDIR)/%.o: $(SRCDIR)/%.$(SRCEXT)
 	@$(CXX) -c -o $@ $(CXXFLAGS) $(INC) $<
 
 clean:
-	@echo "	Cleaning..."; 
-	@$(RM) -r $(BUILDDIR) $(TARGET) $(DOCDIR)/* $(DOC_TARGET)
+	@echo "	Cleaning..."
+	@echo "	[RM ]	$(BUILDDIR)/"
+	@echo "	[RM ]	$(TARGET)"
+	@echo "	[RM ]	docs"
+	@$(RM) -r $(BUILDDIR) $(TARGET) $(DOCHTML) $(DOCMAN)
 
-$(DOC_TARGET):
-	@echo > $(DOC_TARGET)
-	@echo "PROJECT_NAME           = \"DFing\"" >> $(DOC_TARGET)
-	@echo "OUTPUT_DIRECTORY       = \"$(DOCDIR)\"" >> $(DOC_TARGET)
-	@echo "PROJECT_BRIEF          = \"Finger print devices by sniffing on network packets\"" >> $(DOC_TARGET)
-	@echo "EXTRACT_ALL            = YES" >> $(DOC_TARGET)
-	@echo "INPUT                  = $(SRCDIR)" >> $(DOC_TARGET)
-	@echo "EXCLUDE                = $(TESTDIR)" >> $(DOC_TARGET)
-
-docs: $(DOC_TARGET) $(SRCS)
-	@mkdir -p $(DOCDIR)
+docs:
+	@echo "	Generating docs..."
+ifndef DOXYGEN
+	@echo "	** [ERR] doxygen is not available; please install to make docs**"
+else
+	@echo "	[DOX]	$(DOCHTML)"
+	@echo "	[DOX]	$(DOCMAN)"
 	@doxygen $(DOC_TARGET)
-	
+endif
